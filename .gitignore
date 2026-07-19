@@ -45,7 +45,7 @@ export/
 *.zip
 *.dmg
 
-# Logs & crash dumps
+# Logs & crash dumps (do not ignore the source folder `core/`)
 *.log
 *.crash
-core
+*.core

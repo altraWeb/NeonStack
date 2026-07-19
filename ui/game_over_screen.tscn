@@ -64,7 +64,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 36)
 layout_mode = 2
 size_flags_horizontal = 4
-placeholder_text = "Callsign"
+placeholder_text = "Name"
 alignment = 1
 max_length = 12
 
@@ -73,18 +73,18 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 36)
 layout_mode = 2
 size_flags_horizontal = 4
-text = "LOG SCORE"
+text = "SAVE SCORE"
 
 [node name="AgainButton" type="Button" parent="Panel"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 36)
 layout_mode = 2
 size_flags_horizontal = 4
-text = "RELAUNCH"
+text = "PLAY AGAIN"
 
 [node name="TitleButton" type="Button" parent="Panel"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 36)
 layout_mode = 2
 size_flags_horizontal = 4
-text = "RETURN TO DOCK"
+text = "TITLE"

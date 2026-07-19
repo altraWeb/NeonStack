@@ -52,11 +52,11 @@ Never relaunch if a healthy Tetris Godot is already running.
 
 ## Current focus
 
-- _(empty — pick next surprise / mode / polish from playtest)_
+- **V1 ship package** after AI-slop tone pass (export, quit, version, how-to)
 
 ## Backlog
 
-- _(empty)_
+- _(plan next version after V1)_
 
 ## Done
 

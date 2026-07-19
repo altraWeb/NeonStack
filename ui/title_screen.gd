@@ -50,36 +50,36 @@ func _ready() -> void:
 	pulse_a.tween_property(pulse_line_amber, "modulate:a", 0.85, 0.55).set_trans(Tween.TRANS_SINE)
 	pulse_a.tween_property(pulse_line_amber, "modulate:a", 0.12, 0.9).set_trans(Tween.TRANS_SINE)
 
+	# Slow magenta↔cyan drift — skip the amber rainbow lap.
 	var brand_tween := create_tween().set_loops()
-	brand_tween.tween_method(_set_brand_color, Color(1.0, 0.22, 0.7), Color(0.15, 0.95, 1.0), 1.4)
-	brand_tween.tween_method(_set_brand_color, Color(0.15, 0.95, 1.0), Color(1.0, 0.75, 0.2), 1.1)
-	brand_tween.tween_method(_set_brand_color, Color(1.0, 0.75, 0.2), Color(1.0, 0.22, 0.7), 1.3)
+	brand_tween.tween_method(_set_brand_color, Color(0.95, 0.28, 0.72), Color(0.25, 0.85, 0.95), 2.8)
+	brand_tween.tween_method(_set_brand_color, Color(0.25, 0.85, 0.95), Color(0.95, 0.28, 0.72), 2.8)
 
 	var sub := create_tween().set_loops()
-	sub.tween_property(subtitle, "modulate:a", 0.45, 1.1).set_trans(Tween.TRANS_SINE)
-	sub.tween_property(subtitle, "modulate:a", 1.0, 1.1).set_trans(Tween.TRANS_SINE)
+	sub.tween_property(subtitle, "modulate:a", 0.65, 1.8).set_trans(Tween.TRANS_SINE)
+	sub.tween_property(subtitle, "modulate:a", 1.0, 1.8).set_trans(Tween.TRANS_SINE)
 
 
 func _process(delta: float) -> void:
 	_glitch_t -= delta
 	if _glitch_t <= 0.0:
-		_glitch_t = randf_range(1.6, 3.8)
+		_glitch_t = randf_range(5.5, 11.0)
 		_do_brand_glitch()
 
 	if _breath_ready:
-		var breath := 1.0 + sin(Time.get_ticks_msec() * 0.0022) * 0.014
+		var breath := 1.0 + sin(Time.get_ticks_msec() * 0.0016) * 0.008
 		brand_stack.scale = Vector2(breath, breath)
 
 
 func _do_brand_glitch() -> void:
-	# Offset inner labels — BrandStack sits in a VBox so its position is owned by layout
-	var ox := randf_range(-7.0, 7.0)
-	var oy := randf_range(-3.0, 3.0)
+	# Rare, small nudge — not a constant seizure.
+	var ox := randf_range(-3.0, 3.0)
+	var oy := randf_range(-1.5, 1.5)
 	brand.position = Vector2(ox, oy)
-	brand_ghost.position = Vector2(-ox * 1.1, oy * 0.5)
+	brand_ghost.position = Vector2(-ox * 0.8, oy * 0.4)
 	var snap := create_tween()
-	snap.tween_property(brand, "position", Vector2.ZERO, 0.09).set_trans(Tween.TRANS_CUBIC)
-	snap.parallel().tween_property(brand_ghost, "position", Vector2(2, -1), 0.12)
+	snap.tween_property(brand, "position", Vector2.ZERO, 0.12).set_trans(Tween.TRANS_CUBIC)
+	snap.parallel().tween_property(brand_ghost, "position", Vector2(1, -1), 0.14)
 
 
 func _set_brand_color(c: Color) -> void:
@@ -95,13 +95,13 @@ func _set_brand_color(c: Color) -> void:
 func _style_buttons() -> void:
 	for btn: Button in [marathon_btn, sprint_btn, ultra_btn, scores_btn]:
 		var normal := StyleBoxFlat.new()
-		normal.bg_color = Color(1.0, 0.15, 0.55, 0.88)
+		normal.bg_color = Color(0.72, 0.18, 0.48, 0.9)
 		normal.set_corner_radius_all(2)
 		normal.border_width_left = 1
 		normal.border_width_right = 1
 		normal.border_width_top = 1
 		normal.border_width_bottom = 1
-		normal.border_color = Color(0.2, 0.95, 1.0, 0.9)
+		normal.border_color = Color(0.45, 0.85, 0.95, 0.75)
 		normal.content_margin_left = 16
 		normal.content_margin_right = 16
 		normal.content_margin_top = 8
@@ -120,16 +120,14 @@ func _style_buttons() -> void:
 		btn.add_theme_color_override("font_hover_color", Color(0.02, 0.05, 0.08, 1))
 		btn.add_theme_color_override("font_pressed_color", Color(0.08, 0.05, 0.02, 1))
 
-	# Sprint gets a cooler cyan-leaning idle so modes read as distinct protocols
 	var sprint_normal := marathon_btn.get_theme_stylebox("normal").duplicate() as StyleBoxFlat
-	sprint_normal.bg_color = Color(0.12, 0.55, 0.85, 0.9)
-	sprint_normal.border_color = Color(1.0, 0.75, 0.2, 0.95)
+	sprint_normal.bg_color = Color(0.14, 0.42, 0.62, 0.92)
+	sprint_normal.border_color = Color(0.55, 0.8, 0.95, 0.85)
 	sprint_btn.add_theme_stylebox_override("normal", sprint_normal)
 
-	# Ultra: amber protocol — timed score window
 	var ultra_normal := marathon_btn.get_theme_stylebox("normal").duplicate() as StyleBoxFlat
-	ultra_normal.bg_color = Color(0.85, 0.45, 0.08, 0.92)
-	ultra_normal.border_color = Color(1.0, 0.85, 0.25, 1.0)
+	ultra_normal.bg_color = Color(0.62, 0.38, 0.12, 0.92)
+	ultra_normal.border_color = Color(0.95, 0.75, 0.35, 0.9)
 	ultra_btn.add_theme_stylebox_override("normal", ultra_normal)
 
 

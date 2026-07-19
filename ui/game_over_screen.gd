@@ -55,56 +55,56 @@ func show_result(
 	var ultra := _mode.has_time_limit()
 
 	if is_win and sprint:
-		title_label.text = "PROTOCOL COMPLETE"
+		title_label.text = "CLEAR"
 		title_label.add_theme_color_override("font_color", Color(0.2, 0.95, 1.0, 1.0))
 		score_label.text = _format_time(elapsed_sec)
-		detail_label.text = "SPRINT CLEAR  ·  %d/%d  ·  SCORE %06d" % [lines, _mode.target_lines, score]
-		again_btn.text = "RE-RUN SPRINT"
+		detail_label.text = "Sprint  ·  %d/%d  ·  score %06d" % [lines, _mode.target_lines, score]
+		again_btn.text = "PLAY AGAIN"
 		_can_log = _store.is_sprint_highscore(elapsed_sec)
-		status_label.text = "Personal best — press LOG TIME" if _can_log else "Grid purged · time locked"
-		submit_btn.text = "LOG TIME"
+		status_label.text = "Personal best — press SAVE" if _can_log else "Time locked"
+		submit_btn.text = "SAVE TIME"
 	elif sprint:
 		title_label.text = "TOP OUT"
 		title_label.add_theme_color_override("font_color", Color(1.0, 0.2, 0.65, 1.0))
 		score_label.text = _format_time(elapsed_sec)
-		detail_label.text = "SPRINT  ·  %d/%d  ·  incomplete" % [lines, _mode.target_lines]
-		again_btn.text = "RE-RUN SPRINT"
+		detail_label.text = "Sprint  ·  %d/%d  ·  incomplete" % [lines, _mode.target_lines]
+		again_btn.text = "PLAY AGAIN"
 		_can_log = false
-		status_label.text = "No PB — finish 40 lines to log time"
-		submit_btn.text = "LOG TIME"
+		status_label.text = "Finish 40 lines to save a time"
+		submit_btn.text = "SAVE TIME"
 	elif ultra and timed_out:
-		title_label.text = "SIGNAL WINDOW CLOSED"
+		title_label.text = "TIME'S UP"
 		title_label.add_theme_color_override("font_color", Color(1.0, 0.75, 0.2, 1.0))
 		score_label.text = "%06d" % score
-		detail_label.text = "ULTRA · %ds · LINES %03d · L%02d" % [int(_mode.duration_sec), lines, level]
-		again_btn.text = "RE-RUN ULTRA"
+		detail_label.text = "Ultra  ·  %ds  ·  lines %03d  ·  Lv %02d" % [int(_mode.duration_sec), lines, level]
+		again_btn.text = "PLAY AGAIN"
 		_can_log = _store.is_ultra_highscore(score)
-		status_label.text = "NEW STREET RECORD — LOG SCORE" if _can_log else "Window sealed · transmission complete"
-		submit_btn.text = "LOG SCORE"
+		status_label.text = "New high score — press SAVE" if _can_log else "Run complete"
+		submit_btn.text = "SAVE SCORE"
 	elif ultra:
-		title_label.text = "GRID BREACH"
+		title_label.text = "TOP OUT"
 		title_label.add_theme_color_override("font_color", Color(1.0, 0.2, 0.65, 1.0))
 		score_label.text = "%06d" % score
-		detail_label.text = "ULTRA · aborted · LINES %03d · L%02d" % [lines, level]
-		again_btn.text = "RE-RUN ULTRA"
+		detail_label.text = "Ultra  ·  lines %03d  ·  Lv %02d" % [lines, level]
+		again_btn.text = "PLAY AGAIN"
 		_can_log = _store.is_ultra_highscore(score)
-		status_label.text = "NEW STREET RECORD — LOG SCORE" if _can_log else "Breach logged · transmission complete"
-		submit_btn.text = "LOG SCORE"
+		status_label.text = "New high score — press SAVE" if _can_log else "Run ended"
+		submit_btn.text = "SAVE SCORE"
 	else:
 		title_label.text = "TOP OUT"
 		title_label.add_theme_color_override("font_color", Color(1.0, 0.2, 0.65, 1.0))
 		score_label.text = "%06d" % score
-		detail_label.text = "MARATHON  ·  LINES %03d  ·  LEVEL %02d" % [lines, level]
-		again_btn.text = "RELAUNCH"
+		detail_label.text = "Marathon  ·  lines %03d  ·  Lv %02d" % [lines, level]
+		again_btn.text = "PLAY AGAIN"
 		_can_log = _store.is_marathon_highscore(score)
-		status_label.text = "Highscore — press LOG SCORE" if _can_log else "Transmission complete"
-		submit_btn.text = "LOG SCORE"
+		status_label.text = "High score — press SAVE" if _can_log else "Run complete"
+		submit_btn.text = "SAVE SCORE"
 
-	name_edit.text = "PILOT"
+	name_edit.text = "AAA"
 	if _can_log:
 		_persist_entry()
 		_submitted = false
-		status_label.text = "Saved as PILOT — edit name & LOG to add another"
+		status_label.text = "Saved as AAA — edit name & SAVE again"
 		if AudioDirector:
 			AudioDirector.celebrate_street_record()
 	submit_btn.disabled = not _can_log
@@ -135,7 +135,7 @@ func _submit() -> void:
 	_submitted = true
 	submit_btn.disabled = true
 	name_edit.editable = false
-	status_label.text = "Logged to Street Log"
+	status_label.text = "Saved to high scores"
 
 
 func _persist_entry() -> void:

@@ -22,14 +22,15 @@ func _ready() -> void:
 	var city := load("res://vfx/cyber_city.gdshader") as Shader
 	var city_mat := ShaderMaterial.new()
 	city_mat.shader = city
-	city_mat.set_shader_parameter("glitch_amount", 0.48)
+	# Quieter city bed — punch comes from clears, not constant glitch.
+	city_mat.set_shader_parameter("glitch_amount", 0.22)
 	starfield.material = city_mat
 
 	var post := load("res://vfx/post_glitch.gdshader") as Shader
 	_post_mat = ShaderMaterial.new()
 	_post_mat.shader = post
-	_post_mat.set_shader_parameter("chroma", 0.005)
-	_post_mat.set_shader_parameter("scan_strength", 0.075)
+	_post_mat.set_shader_parameter("chroma", 0.0015)
+	_post_mat.set_shader_parameter("scan_strength", 0.035)
 	post_fx.material = _post_mat
 	post_fx.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
@@ -40,8 +41,8 @@ func _process(_delta: float) -> void:
 	if _post_mat and AudioDirector:
 		var kick: float = AudioDirector.get_post_kick()
 		_post_mat.set_shader_parameter("kick", kick)
-		# Slight ambient chroma even when idle so the CRT feel never goes flat
-		_post_mat.set_shader_parameter("chroma", 0.004 + kick * 0.002)
+		# Almost flat idle; chroma only rides the clear kick.
+		_post_mat.set_shader_parameter("chroma", 0.0012 + kick * 0.0035)
 
 
 func _clear_screen() -> void:

@@ -120,7 +120,7 @@ func is_highscore(score: int) -> bool:
 func _callsign(name: String) -> String:
 	var trimmed := name.strip_edges()
 	if trimmed.is_empty():
-		return "PILOT"
+		return "AAA"
 	return trimmed.substr(0, 12)
 
 

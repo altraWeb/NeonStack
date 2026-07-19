@@ -69,7 +69,7 @@ func _configure_mode_hud() -> void:
 func _on_state_changed(state: GameController.State) -> void:
 	pause_overlay.visible = state == GameController.State.PAUSED
 	if state == GameController.State.PAUSED:
-		pause_label.text = "PAUSED · TUNE LIVE"
+		pause_label.text = "PAUSED"
 
 
 func _on_settings_changed() -> void:
@@ -91,21 +91,10 @@ func _on_lines_cleared(_rows: Array, _count: int) -> void:
 		return
 	if controller == null or controller.engine == null:
 		return
-	# Last clear inside the final second window — stamp FINAL PACKET once.
+	# Last-second clear: brief score pulse only (no slogan stamp).
 	if controller.engine.time_remaining() <= 1.0 and not _final_packet_shown:
 		_final_packet_shown = true
-		_flash_final_packet()
-
-
-func _flash_final_packet() -> void:
-	score_label.text = "FINAL"
-	score_label.modulate = Color(0.2, 1.0, 1.0, 1.0)
-	var tw := create_tween()
-	tw.tween_property(score_label, "modulate", Color(1, 1, 1, 1), 0.35)
-	tw.tween_callback(func():
-		if controller != null and controller.engine != null:
-			score_label.text = "%06d" % controller.engine.score.score
-	)
+		_pulse_hud_value(score_label)
 
 
 func _pulse_hud_value(label: Label) -> void:
@@ -118,8 +107,7 @@ func _refresh_hud() -> void:
 	if controller == null or controller.engine == null:
 		return
 	var s := controller.engine.score
-	if not _final_packet_shown or score_label.text != "FINAL":
-		score_label.text = "%06d" % s.score
+	score_label.text = "%06d" % s.score
 	level_label.text = "%02d" % s.level
 	_update_lines_label(s.lines)
 	if timer_box.visible:
@@ -140,22 +128,15 @@ func _update_timer_label() -> void:
 
 func _style_ultra_timer(remaining: float) -> void:
 	if remaining <= 10.0:
-		if not _override_active:
-			_override_active = true
-			timer_label.text = "OVERRIDE"
-		# Pulse neon red under 10s while still showing countdown after a beat.
-		var pulse := 0.55 + 0.45 * absf(sin(Time.get_ticks_msec() * 0.018))
-		timer_label.modulate = Color(1.0, 0.15 + pulse * 0.2, 0.35, 1.0)
-		if int(Time.get_ticks_msec() / 400) % 2 == 0:
-			timer_label.text = _format_time(remaining)
-		else:
-			timer_label.text = "OVERRIDE"
+		_override_active = true
+		var pulse := 0.65 + 0.35 * absf(sin(Time.get_ticks_msec() * 0.012))
+		timer_label.modulate = Color(1.0, 0.25 + pulse * 0.15, 0.3, 1.0)
 	elif remaining <= 30.0:
 		_override_active = false
-		timer_label.modulate = Color(1.0, 0.55, 0.2, 1.0)
+		timer_label.modulate = Color(1.0, 0.6, 0.3, 1.0)
 	else:
 		_override_active = false
-		timer_label.modulate = Color(0.55, 0.95, 1.0, 1.0)
+		timer_label.modulate = Color(0.7, 0.9, 0.95, 1.0)
 
 
 func _update_lines_label(lines: int) -> void:

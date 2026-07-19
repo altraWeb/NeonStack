@@ -26,7 +26,7 @@ Or open the project folder in the Godot Project Manager.
 | **Sprint 40** | Clear 40 lines | Fastest time | Incomplete runs are not logged |
 | **Ultra** | Score in **180 seconds** | Highest score | Timeout or top-out both log score |
 
-Street Log (`STREET LOG` on the title) keeps separate boards per mode.
+High Scores (title button) keeps separate boards per mode.
 
 ## Controls
 
@@ -40,9 +40,9 @@ Street Log (`STREET LOG` on the title) keeps separate boards per mode.
 | Hold | C or Shift | Y |
 | Pause | P or Esc | Start |
 
-## Feel / settings (PROTOCOL TUNING)
+## Feel / settings
 
-Available on the title screen and in the pause menu. Values persist in `user://settings.cfg`.
+Available on the title screen and in the pause menu (**SETTINGS**). Values persist in `user://settings.cfg`.
 
 | Control | Meaning | Default |
 |---|---|---|
@@ -52,13 +52,13 @@ Available on the title screen and in the pause menu. Values persist in `user://s
 | **ARR** | *Auto Repeat Rate* — step interval while holding left/right after DAS | 33 ms |
 | **SOFT** | Soft-drop repeat interval (no DAS; starts immediately) | 50 ms |
 | **LOCK** | Lock delay on the ground before the piece locks | 500 ms |
-| **SNAP TO GUIDELINE** | Reset DAS / ARR / SOFT / LOCK to the defaults above | — |
+| **RESET DEFAULTS** | Reset DAS / ARR / SOFT / LOCK to the defaults above | — |
 
 Tips:
 
 - Lower **DAS/ARR** → snappier sideways movement (more competitive).
 - Higher **LOCK** → more time to finesse after touching the stack.
-- Changes in pause apply live (`PAUSED · TUNE LIVE`).
+- Changes in pause apply live.
 
 ## Audio
 
@@ -73,7 +73,7 @@ Local only (`user://highscores.json`), mode-keyed:
 - Marathon / Ultra → sort by score (descending)
 - Sprint → sort by clear time (ascending)
 
-Personal bests auto-save on the end screen (callsign defaults to `PILOT`; you can re-log under another name).
+Personal bests auto-save on the end screen (name defaults to `AAA`; you can save again under another name).
 
 ## Tests
 

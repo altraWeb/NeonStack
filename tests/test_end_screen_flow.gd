@@ -111,7 +111,7 @@ func _test_ultra_timeout_swaps_to_game_over(t: TestSuite) -> void:
 	var after: Node = host.get_child(0)
 	t.assert_eq(after.name, "GameOverScreen", "ultra timeout shows GameOverScreen")
 	t.assert_true(engine.is_timed_out, "engine marked timed out")
-	t.assert_eq(after.title_label.text, "SIGNAL WINDOW CLOSED", "ultra timeout copy")
+	t.assert_eq(after.title_label.text, "TIME'S UP", "ultra timeout copy")
 	t.assert_true(is_instance_valid(main), "main shell still alive after timeout")
 
 	main.queue_free()

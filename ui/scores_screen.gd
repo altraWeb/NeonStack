@@ -32,21 +32,21 @@ func refresh() -> void:
 	var ultra := _mode_id == GameMode.ultra_180().id
 
 	if sprint:
-		subtitle.text = "SPRINT · fastest clears"
-		subtitle.add_theme_color_override("font_color", Color(0.35, 0.85, 1.0, 0.85))
+		subtitle.text = "Sprint — fastest clears"
+		subtitle.add_theme_color_override("font_color", Color(0.45, 0.8, 0.95, 0.85))
 	elif ultra:
-		subtitle.text = "ULTRA · highest scores in 180s"
-		subtitle.add_theme_color_override("font_color", Color(1.0, 0.75, 0.25, 0.9))
+		subtitle.text = "Ultra — best scores in 180s"
+		subtitle.add_theme_color_override("font_color", Color(0.95, 0.72, 0.35, 0.9))
 	else:
-		subtitle.text = "MARATHON · highest scores"
-		subtitle.add_theme_color_override("font_color", Color(1.0, 0.35, 0.75, 0.75))
+		subtitle.text = "Marathon — highest scores"
+		subtitle.add_theme_color_override("font_color", Color(0.9, 0.45, 0.7, 0.8))
 
 	marathon_btn.disabled = _mode_id == GameMode.standard_marathon().id
 	sprint_btn.disabled = sprint
 	ultra_btn.disabled = ultra
 
 	if top.is_empty():
-		list_label.text = "No transmissions logged yet."
+		list_label.text = "No scores yet."
 		back_btn.grab_focus()
 		return
 

@@ -105,6 +105,8 @@ func show_result(
 		_persist_entry()
 		_submitted = false
 		status_label.text = "Saved as PILOT — edit name & LOG to add another"
+		if AudioDirector:
+			AudioDirector.celebrate_street_record()
 	submit_btn.disabled = not _can_log
 	name_edit.editable = _can_log
 	if name_edit.editable:

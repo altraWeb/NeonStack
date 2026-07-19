@@ -25,11 +25,12 @@ func _ready() -> void:
 	highscores = LocalHighscoreStore.new()
 	_move_repeat = RepeatInput.new()
 	_soft_repeat = RepeatInput.new()
-	_apply_feel_settings()
+	apply_feel_settings()
 	_wire_events()
 
 
-func _apply_feel_settings() -> void:
+func apply_feel_settings() -> void:
+	SettingsService.clamp_feel()
 	_move_repeat.das_sec = SettingsService.das_ms / 1000.0
 	_move_repeat.arr_sec = maxf(0.001, SettingsService.arr_ms / 1000.0)
 	_soft_repeat.das_sec = 0.0
@@ -55,7 +56,7 @@ func start_game(game_mode: GameMode = null) -> void:
 	if game_mode != null:
 		mode = game_mode
 	engine.configure_mode(mode)
-	_apply_feel_settings()
+	apply_feel_settings()
 	engine.start()
 	_move_repeat.end()
 	_soft_repeat.end()
@@ -69,7 +70,7 @@ func toggle_pause() -> void:
 		_set_state(State.PAUSED)
 		GameEvents.game_paused.emit(true)
 	elif state == State.PAUSED:
-		_apply_feel_settings()
+		apply_feel_settings()
 		_set_state(State.PLAYING)
 		GameEvents.game_paused.emit(false)
 

@@ -15,6 +15,7 @@ signal game_ended(score: int, lines: int, level: int, is_win: bool, elapsed_sec:
 @onready var hold_panel: DockPanel = %HoldPanel
 @onready var next_panel: DockPanel = %NextPanel
 @onready var pause_label: Label = %PauseLabel
+@onready var settings_panel: VBoxContainer = $PauseOverlay/PauseColumn/SettingsPanel
 
 var controller: GameController
 var start_mode: GameMode = GameMode.standard_marathon()
@@ -35,6 +36,8 @@ func _ready() -> void:
 	GameEvents.game_over.connect(_on_game_over)
 	GameEvents.game_won.connect(_on_game_won)
 	GameEvents.game_timed_out.connect(_on_game_timed_out)
+	if settings_panel != null and settings_panel.has_signal("changed"):
+		settings_panel.changed.connect(_on_settings_changed)
 	pause_overlay.visible = false
 	_configure_mode_hud()
 	controller.start_game(start_mode)
@@ -66,7 +69,13 @@ func _configure_mode_hud() -> void:
 func _on_state_changed(state: GameController.State) -> void:
 	pause_overlay.visible = state == GameController.State.PAUSED
 	if state == GameController.State.PAUSED:
-		pause_label.text = "PAUSED"
+		pause_label.text = "PAUSED · TUNE LIVE"
+
+
+func _on_settings_changed() -> void:
+	# Feel changes in pause apply immediately so resume matches the dials.
+	if controller != null:
+		controller.apply_feel_settings()
 
 
 func _on_score(score: int, lines: int, level: int) -> void:

@@ -24,6 +24,7 @@ func _run() -> void:
 		preload("res://tests/test_end_screen_flow.gd").new(),
 		preload("res://tests/test_mode_highscores.gd").new(),
 		preload("res://tests/test_ultra_mode.gd").new(),
+		preload("res://tests/test_settings_feel.gd").new(),
 	]
 
 	var total_pass := 0

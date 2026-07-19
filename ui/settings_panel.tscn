@@ -3,14 +3,14 @@
 [ext_resource type="Script" path="res://ui/settings_panel.gd" id="1_settings"]
 
 [node name="SettingsPanel" type="VBoxContainer"]
-theme_override_constants/separation = 8
+theme_override_constants/separation = 6
 script = ExtResource("1_settings")
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.3, 0.75, 0.9)
 theme_override_font_sizes/font_size = 14
-text = "FEEL / AUDIO"
+text = "PROTOCOL TUNING"
 horizontal_alignment = 1
 
 [node name="MusicRow" type="HBoxContainer" parent="."]
@@ -18,7 +18,7 @@ layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="MusicLabel" type="Label" parent="MusicRow"]
-custom_minimum_size = Vector2(70, 0)
+custom_minimum_size = Vector2(78, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.9, 1, 0.9)
 theme_override_font_sizes/font_size = 12
@@ -35,7 +35,7 @@ layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="SfxLabel" type="Label" parent="SfxRow"]
-custom_minimum_size = Vector2(70, 0)
+custom_minimum_size = Vector2(78, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.9, 1, 0.9)
 theme_override_font_sizes/font_size = 12
@@ -55,3 +55,117 @@ theme_override_font_sizes/font_size = 12
 button_pressed = true
 text = "GHOST PIECE"
 alignment = 1
+
+[node name="FeelHeader" type="Label" parent="."]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.75, 0.25, 0.85)
+theme_override_font_sizes/font_size = 11
+text = "FEEL · ms"
+horizontal_alignment = 1
+
+[node name="DasRow" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="DasLabel" type="Label" parent="DasRow"]
+custom_minimum_size = Vector2(78, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.9, 1, 0.9)
+theme_override_font_sizes/font_size = 12
+text = "DAS"
+
+[node name="DasSlider" type="HSlider" parent="DasRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DasValue" type="Label" parent="DasRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(44, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 0.95)
+theme_override_font_sizes/font_size = 11
+text = "167"
+horizontal_alignment = 2
+
+[node name="ArrRow" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ArrLabel" type="Label" parent="ArrRow"]
+custom_minimum_size = Vector2(78, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.9, 1, 0.9)
+theme_override_font_sizes/font_size = 12
+text = "ARR"
+
+[node name="ArrSlider" type="HSlider" parent="ArrRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ArrValue" type="Label" parent="ArrRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(44, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 0.95)
+theme_override_font_sizes/font_size = 11
+text = "33"
+horizontal_alignment = 2
+
+[node name="SoftRow" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="SoftLabel" type="Label" parent="SoftRow"]
+custom_minimum_size = Vector2(78, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.9, 1, 0.9)
+theme_override_font_sizes/font_size = 12
+text = "SOFT"
+
+[node name="SoftSlider" type="HSlider" parent="SoftRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SoftValue" type="Label" parent="SoftRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(44, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 0.95)
+theme_override_font_sizes/font_size = 11
+text = "50"
+horizontal_alignment = 2
+
+[node name="LockRow" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="LockLabel" type="Label" parent="LockRow"]
+custom_minimum_size = Vector2(78, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.9, 1, 0.9)
+theme_override_font_sizes/font_size = 12
+text = "LOCK"
+
+[node name="LockSlider" type="HSlider" parent="LockRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LockValue" type="Label" parent="LockRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(44, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 0.95)
+theme_override_font_sizes/font_size = 11
+text = "500"
+horizontal_alignment = 2
+
+[node name="ResetFeelButton" type="Button" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "SNAP TO GUIDELINE"

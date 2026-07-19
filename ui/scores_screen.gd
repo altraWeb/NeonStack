@@ -33,10 +33,13 @@ func refresh() -> void:
 
 	if sprint:
 		subtitle.text = "SPRINT · fastest clears"
+		subtitle.add_theme_color_override("font_color", Color(0.35, 0.85, 1.0, 0.85))
 	elif ultra:
 		subtitle.text = "ULTRA · highest scores in 180s"
+		subtitle.add_theme_color_override("font_color", Color(1.0, 0.75, 0.25, 0.9))
 	else:
 		subtitle.text = "MARATHON · highest scores"
+		subtitle.add_theme_color_override("font_color", Color(1.0, 0.35, 0.75, 0.75))
 
 	marathon_btn.disabled = _mode_id == GameMode.standard_marathon().id
 	sprint_btn.disabled = sprint

@@ -109,6 +109,14 @@ func _on_game_timed_out(_score: int, _elapsed: float) -> void:
 	_beep(740.0, 0.2, 0.2, 0.55)
 
 
+func celebrate_street_record() -> void:
+	# Cyan transmission ping for a new Street Log PB.
+	_kick = 1.0
+	_beep(660.0, 0.1, 0.2, 0.25)
+	_beep(990.0, 0.16, 0.28, 0.18)
+	_beep(1320.0, 0.12, 0.18, 0.3)
+
+
 func _ensure_buses() -> void:
 	if AudioServer.get_bus_index("Music") == -1:
 		AudioServer.add_bus()

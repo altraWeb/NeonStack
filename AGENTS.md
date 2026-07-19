@@ -52,11 +52,11 @@ Never relaunch if a healthy Tetris Godot is already running.
 
 ## Current focus
 
-- **E — Pause feel sliders:** DAS/ARR/soft-drop in settings panel
+- _(empty — pick next surprise / mode / polish from playtest)_
 
 ## Backlog
 
-- **F — Surprise polish:** agent pick (partially used in Ultra OVERRIDE / FINAL PACKET)
+- _(empty)_
 
 ## Done
 
@@ -65,3 +65,5 @@ Never relaunch if a healthy Tetris Godot is already running.
 - **B — Sprint mode (TDD):** `GameMode.sprint_40()`, `won` signal, timer freeze, Marathon unchanged
 - **Mode highscores:** Marathon by score, Sprint by clear time, Ultra by score
 - **D — Ultra 180 (TDD):** timed score attack, countdown HUD, Street Log board, timeout end
+- **E — Pause feel sliders:** DAS/ARR/soft/lock in PROTOCOL TUNING + SNAP TO GUIDELINE
+- **F — Surprise polish:** Ultra OVERRIDE/FINAL PACKET, Street Record ping, live pause feel

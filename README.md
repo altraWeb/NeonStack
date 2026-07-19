@@ -3,10 +3,14 @@
 Cyberpunk, guideline-inspired Tetris built with **Godot 4.7** (GDScript).  
 Neon magenta / cyan grid, rain city backdrop, glitch post-FX, procedural street synth BGM.
 
+**Version:** 1.0.0
+
 ## Requirements
 
 - Godot **4.7.x** (tested with `4.7.1.stable`)
 - macOS (desktop-portable; Windows/Linux should run as-is)
+- For release export: Godot **export templates** matching the editor version  
+  (`Editor → Manage Export Templates`)
 
 Godot install used for this project: `/Applications/Godot.app`.
 
@@ -74,6 +78,24 @@ Local only (`user://highscores.json`), mode-keyed:
 - Sprint → sort by clear time (ascending)
 
 Personal bests auto-save on the end screen (name defaults to `AAA`; you can save again under another name).
+
+## Release (macOS)
+
+1. Install export templates for Godot 4.7.x in the editor.
+2. Export:
+
+```bash
+./scripts/export_macos.sh
+# → build/NeonStack.zip
+```
+
+Or: Project → Export → **macOS** → Export Project.
+
+Notes:
+
+- Bundle id: `com.altrano.neonstack`
+- Ad-hoc codesign is fine for local / itch-style drops. Gatekeeper may warn until you right-click → Open (or notarize with an Apple Developer ID later).
+- Title screen shows **v1.0.0**, controls hint, and **EXIT**.
 
 ## Tests
 

@@ -2,7 +2,6 @@
 .godot/
 *.translation
 export.cfg
-export_presets.cfg
 *.tmp
 
 # Godot / .NET leftovers
@@ -31,6 +30,7 @@ Desktop.ini
 secrets/
 
 # Build / export output
+build/
 builds/
 dist/
 export/

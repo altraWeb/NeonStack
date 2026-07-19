@@ -52,7 +52,7 @@ Never relaunch if a healthy Tetris Godot is already running.
 
 ## Current focus
 
-- **V1 ship package** after AI-slop tone pass (export, quit, version, how-to)
+- **V1.0.0** — ship package in progress / playtest
 
 ## Backlog
 

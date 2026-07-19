@@ -9,6 +9,8 @@ signal scores_pressed
 @onready var sprint_btn: Button = %SprintButton
 @onready var ultra_btn: Button = %UltraButton
 @onready var scores_btn: Button = %ScoresButton
+@onready var exit_btn: Button = %ExitButton
+@onready var footer: Label = %Footer
 @onready var pulse_line: ColorRect = %PulseLine
 @onready var pulse_line_amber: ColorRect = %PulseLineAmber
 @onready var brand_ghost: Label = %BrandGhost
@@ -24,6 +26,9 @@ func _ready() -> void:
 	sprint_btn.pressed.connect(func(): start_pressed.emit(GameMode.sprint_40()))
 	ultra_btn.pressed.connect(func(): start_pressed.emit(GameMode.ultra_180()))
 	scores_btn.pressed.connect(func(): scores_pressed.emit())
+	exit_btn.pressed.connect(_quit)
+	var version := str(ProjectSettings.get_setting("application/config/version", "1.0.0"))
+	footer.text = "v%s" % version
 	marathon_btn.grab_focus()
 
 	# Pivot at stack center so scale punches from the title core
@@ -92,8 +97,12 @@ func _set_brand_color(c: Color) -> void:
 	brand_ghost.add_theme_color_override("font_color", ghost)
 
 
+func _quit() -> void:
+	get_tree().quit()
+
+
 func _style_buttons() -> void:
-	for btn: Button in [marathon_btn, sprint_btn, ultra_btn, scores_btn]:
+	for btn: Button in [marathon_btn, sprint_btn, ultra_btn, scores_btn, exit_btn]:
 		var normal := StyleBoxFlat.new()
 		normal.bg_color = Color(0.72, 0.18, 0.48, 0.9)
 		normal.set_corner_radius_all(2)
@@ -129,6 +138,12 @@ func _style_buttons() -> void:
 	ultra_normal.bg_color = Color(0.62, 0.38, 0.12, 0.92)
 	ultra_normal.border_color = Color(0.95, 0.75, 0.35, 0.9)
 	ultra_btn.add_theme_stylebox_override("normal", ultra_normal)
+
+	var exit_normal := marathon_btn.get_theme_stylebox("normal").duplicate() as StyleBoxFlat
+	exit_normal.bg_color = Color(0.18, 0.14, 0.22, 0.9)
+	exit_normal.border_color = Color(0.55, 0.5, 0.6, 0.7)
+	exit_btn.add_theme_stylebox_override("normal", exit_normal)
+	exit_btn.add_theme_color_override("font_color", Color(0.85, 0.8, 0.9, 1))
 
 
 func _unhandled_input(event: InputEvent) -> void:

@@ -6,6 +6,7 @@ func run() -> TestSuite:
 	var t := TestSuite.new("EndScreenFlow")
 	await _test_top_out_swaps_to_game_over(t)
 	await _test_win_swaps_to_game_over(t)
+	await _test_ultra_timeout_swaps_to_game_over(t)
 	return t
 
 
@@ -82,6 +83,36 @@ func _test_win_swaps_to_game_over(t: TestSuite) -> void:
 	t.assert_eq(after.name, "GameOverScreen", "win shows GameOverScreen")
 	t.assert_eq(host.get_child_count(), 1, "exactly one screen after win")
 	t.assert_true(is_instance_valid(main), "main shell still alive after win")
+
+	main.queue_free()
+	await tree.process_frame
+
+
+func _test_ultra_timeout_swaps_to_game_over(t: TestSuite) -> void:
+	var tree := Engine.get_main_loop() as SceneTree
+	var main := (load("res://ui/main.tscn") as PackedScene).instantiate()
+	tree.root.add_child(main)
+	await tree.process_frame
+
+	var host: Node = main.get_node("ScreenHost")
+	host.get_child(0).start_pressed.emit(GameMode.ultra_180())
+	await tree.process_frame
+	await tree.process_frame
+
+	var play: Node = host.get_child(0)
+	t.assert_eq(play.name, "PlayScene", "ultra starts PlayScene")
+	var engine: BoardEngine = play.controller.engine
+	engine.mode.duration_sec = 0.05
+	engine.tick_gravity(0.1, false)
+	await tree.process_frame
+	await tree.process_frame
+	await tree.process_frame
+
+	var after: Node = host.get_child(0)
+	t.assert_eq(after.name, "GameOverScreen", "ultra timeout shows GameOverScreen")
+	t.assert_true(engine.is_timed_out, "engine marked timed out")
+	t.assert_eq(after.title_label.text, "SIGNAL WINDOW CLOSED", "ultra timeout copy")
+	t.assert_true(is_instance_valid(main), "main shell still alive after timeout")
 
 	main.queue_free()
 	await tree.process_frame

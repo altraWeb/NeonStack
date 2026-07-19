@@ -12,3 +12,4 @@ signal game_started
 signal game_paused(paused: bool)
 signal game_over(final_score: int)
 signal game_won(final_score: int, elapsed_sec: float)
+signal game_timed_out(final_score: int, elapsed_sec: float)

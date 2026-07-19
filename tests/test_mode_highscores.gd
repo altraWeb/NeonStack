@@ -15,6 +15,8 @@ func run() -> TestSuite:
 	_wipe()
 	_test_boards_are_isolated(t)
 	_wipe()
+	_test_ultra_ranks_by_score(t)
+	_wipe()
 	_test_migrates_legacy_array(t)
 	_wipe()
 	_test_save_creates_file(t)
@@ -77,10 +79,28 @@ func _test_boards_are_isolated(t: TestSuite) -> void:
 	var s := _store()
 	s.submit_marathon("M", 9000, 50, 8)
 	s.submit_sprint("S", 100, 40, 5, 55.0)
+	s.submit_ultra("U", 5000, 30, 4, 180.0)
 	t.assert_eq(s.get_top(GameMode.standard_marathon().id, 10).size(), 1, "marathon board size")
 	t.assert_eq(s.get_top(GameMode.sprint_40().id, 10).size(), 1, "sprint board size")
+	t.assert_eq(s.get_top(GameMode.ultra_180().id, 10).size(), 1, "ultra board size")
 	t.assert_eq(str(s.get_top(GameMode.standard_marathon().id, 1)[0]["name"]), "M", "marathon name")
 	t.assert_eq(str(s.get_top(GameMode.sprint_40().id, 1)[0]["name"]), "S", "sprint name")
+	t.assert_eq(str(s.get_top(GameMode.ultra_180().id, 1)[0]["name"]), "U", "ultra name")
+
+
+func _test_ultra_ranks_by_score(t: TestSuite) -> void:
+	var s := _store()
+	s.submit_ultra("LOW", 1000, 10, 2, 180.0)
+	s.submit_ultra("HIGH", 9000, 40, 6, 180.0)
+	s.submit_ultra("MID", 4000, 20, 3, 120.0)
+	var top := s.get_top(GameMode.ultra_180().id, 10)
+	t.assert_eq(top.size(), 3, "three ultra entries")
+	t.assert_eq(str(top[0]["name"]), "HIGH", "highest score first")
+	t.assert_eq(int(top[0]["score"]), 9000, "top score value")
+	t.assert_true(s.is_ultra_highscore(10000), "better score is highscore")
+	t.assert_false(s.is_ultra_highscore(0), "zero score is not")
+	s.submit_ultra("ZERO", 0, 0, 1, 180.0)
+	t.assert_eq(s.get_top(GameMode.ultra_180().id, 10).size(), 3, "zero score not stored")
 
 
 func _test_migrates_legacy_array(t: TestSuite) -> void:

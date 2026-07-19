@@ -80,6 +80,35 @@ func is_sprint_highscore(elapsed_sec: float) -> bool:
 	return elapsed_sec < float(board[board.size() - 1]["elapsed_sec"])
 
 
+func submit_ultra(name: String, score: int, lines: int, level: int, elapsed_sec: float) -> void:
+	if score <= 0:
+		return
+	var entry := {
+		"name": _callsign(name),
+		"score": score,
+		"lines": lines,
+		"level": level,
+		"elapsed_sec": elapsed_sec,
+		"at": Time.get_datetime_string_from_system(),
+	}
+	var mode_id := GameMode.ultra_180().id
+	var board := _board(mode_id)
+	board.append(entry)
+	board.sort_custom(func(a, b): return int(a["score"]) > int(b["score"]))
+	_trim(board)
+	_boards[mode_id] = board
+	_save()
+
+
+func is_ultra_highscore(score: int) -> bool:
+	if score <= 0:
+		return false
+	var board := _board(GameMode.ultra_180().id)
+	if board.size() < MAX_ENTRIES:
+		return true
+	return score > int(board[board.size() - 1]["score"])
+
+
 func submit(name: String, score: int, lines: int, level: int) -> void:
 	submit_marathon(name, score, lines, level)
 

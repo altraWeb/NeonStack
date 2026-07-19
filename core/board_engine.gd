@@ -11,6 +11,7 @@ signal score_changed(score: int, lines: int, level: int)
 signal leveled_up(level: int)
 signal ended(final_score: int)
 signal won(final_score: int, elapsed_sec: float)
+signal timed_out(final_score: int, elapsed_sec: float)
 
 const COLS := 10
 const ROWS := 22
@@ -37,6 +38,7 @@ const MAX_MOVE_RESETS := 15
 
 var is_game_over: bool = false
 var is_won: bool = false
+var is_timed_out: bool = false
 var elapsed_sec: float = 0.0
 var _gravity_accum: float = 0.0
 var _seed: int = -1
@@ -62,6 +64,7 @@ func start() -> void:
 	hold_used = false
 	is_game_over = false
 	is_won = false
+	is_timed_out = false
 	elapsed_sec = 0.0
 	_gravity_accum = 0.0
 	score.reset()
@@ -141,7 +144,13 @@ func _fits(piece: ActivePiece) -> bool:
 
 
 func is_play_stopped() -> bool:
-	return is_game_over or is_won
+	return is_game_over or is_won or is_timed_out
+
+
+func time_remaining() -> float:
+	if mode == null or not mode.has_time_limit():
+		return -1.0
+	return maxf(0.0, mode.duration_sec - elapsed_sec)
 
 
 func try_move(dx: int, dy: int) -> bool:
@@ -237,6 +246,8 @@ func tick_gravity(delta: float, soft_dropping: bool) -> void:
 	if is_play_stopped():
 		return
 	elapsed_sec += delta
+	if _try_declare_timeout():
+		return
 	if active == null:
 		return
 
@@ -313,6 +324,18 @@ func _try_declare_win() -> bool:
 	is_won = true
 	active = null
 	won.emit(score.score, elapsed_sec)
+	return true
+
+
+func _try_declare_timeout() -> bool:
+	if mode == null or not mode.has_time_limit():
+		return false
+	if elapsed_sec < mode.duration_sec:
+		return false
+	elapsed_sec = mode.duration_sec
+	is_timed_out = true
+	active = null
+	timed_out.emit(score.score, elapsed_sec)
 	return true
 
 

@@ -52,16 +52,16 @@ Never relaunch if a healthy Tetris Godot is already running.
 
 ## Current focus
 
-- **Mode highscores:** done — Marathon by score, Sprint by clear time
+- **E — Pause feel sliders:** DAS/ARR/soft-drop in settings panel
 
 ## Backlog
 
-- **D — Ultra/Blitz mode:** timed score attack
-- **E — Pause feel sliders:** DAS/ARR/soft-drop in settings panel
-- **F — Surprise polish:** agent pick
+- **F — Surprise polish:** agent pick (partially used in Ultra OVERRIDE / FINAL PACKET)
 
 ## Done
 
 - **A — Feel:** DAS/ARR, soft-drop repeat, settings (music/SFX/ghost)
 - **C — Cyberpunk AV polish:** richer BGM, heavier glitch/clear FX, title punch
 - **B — Sprint mode (TDD):** `GameMode.sprint_40()`, `won` signal, timer freeze, Marathon unchanged
+- **Mode highscores:** Marathon by score, Sprint by clear time, Ultra by score
+- **D — Ultra 180 (TDD):** timed score attack, countdown HUD, Street Log board, timeout end

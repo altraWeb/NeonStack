@@ -15,9 +15,17 @@ func submit_sprint(_name: String, _score: int, _lines: int, _level: int, _elapse
 	pass
 
 
+func submit_ultra(_name: String, _score: int, _lines: int, _level: int, _elapsed_sec: float) -> void:
+	pass
+
+
 func is_marathon_highscore(_score: int) -> bool:
 	return _score > 0
 
 
 func is_sprint_highscore(_elapsed_sec: float) -> bool:
 	return _elapsed_sec > 0.0
+
+
+func is_ultra_highscore(_score: int) -> bool:
+	return _score > 0

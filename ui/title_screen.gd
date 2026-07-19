@@ -7,6 +7,7 @@ signal scores_pressed
 @onready var subtitle: Label = %Subtitle
 @onready var marathon_btn: Button = %MarathonButton
 @onready var sprint_btn: Button = %SprintButton
+@onready var ultra_btn: Button = %UltraButton
 @onready var scores_btn: Button = %ScoresButton
 @onready var pulse_line: ColorRect = %PulseLine
 @onready var pulse_line_amber: ColorRect = %PulseLineAmber
@@ -21,6 +22,7 @@ func _ready() -> void:
 	_style_buttons()
 	marathon_btn.pressed.connect(func(): start_pressed.emit(GameMode.standard_marathon()))
 	sprint_btn.pressed.connect(func(): start_pressed.emit(GameMode.sprint_40()))
+	ultra_btn.pressed.connect(func(): start_pressed.emit(GameMode.ultra_180()))
 	scores_btn.pressed.connect(func(): scores_pressed.emit())
 	marathon_btn.grab_focus()
 
@@ -91,7 +93,7 @@ func _set_brand_color(c: Color) -> void:
 
 
 func _style_buttons() -> void:
-	for btn: Button in [marathon_btn, sprint_btn, scores_btn]:
+	for btn: Button in [marathon_btn, sprint_btn, ultra_btn, scores_btn]:
 		var normal := StyleBoxFlat.new()
 		normal.bg_color = Color(1.0, 0.15, 0.55, 0.88)
 		normal.set_corner_radius_all(2)
@@ -123,6 +125,12 @@ func _style_buttons() -> void:
 	sprint_normal.bg_color = Color(0.12, 0.55, 0.85, 0.9)
 	sprint_normal.border_color = Color(1.0, 0.75, 0.2, 0.95)
 	sprint_btn.add_theme_stylebox_override("normal", sprint_normal)
+
+	# Ultra: amber protocol — timed score window
+	var ultra_normal := marathon_btn.get_theme_stylebox("normal").duplicate() as StyleBoxFlat
+	ultra_normal.bg_color = Color(0.85, 0.45, 0.08, 0.92)
+	ultra_normal.border_color = Color(1.0, 0.85, 0.25, 1.0)
+	ultra_btn.add_theme_stylebox_override("normal", ultra_normal)
 
 
 func _unhandled_input(event: InputEvent) -> void:

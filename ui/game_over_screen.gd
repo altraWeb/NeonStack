@@ -19,6 +19,7 @@ var _lines: int = 0
 var _level: int = 1
 var _elapsed_sec: float = 0.0
 var _is_win: bool = false
+var _timed_out: bool = false
 var _mode: GameMode = GameMode.standard_marathon()
 var _submitted: bool = false
 var _can_log: bool = false
@@ -37,18 +38,21 @@ func show_result(
 	level: int,
 	is_win: bool = false,
 	elapsed_sec: float = 0.0,
-	mode: GameMode = null
+	mode: GameMode = null,
+	timed_out: bool = false
 ) -> void:
 	_score = score
 	_lines = lines
 	_level = level
 	_elapsed_sec = elapsed_sec
 	_is_win = is_win
+	_timed_out = timed_out
 	_mode = mode if mode != null else GameMode.standard_marathon()
 	_submitted = false
+	_can_log = false
 
 	var sprint := _mode.win_on_target
-	_can_log = false
+	var ultra := _mode.has_time_limit()
 
 	if is_win and sprint:
 		title_label.text = "PROTOCOL COMPLETE"
@@ -68,6 +72,24 @@ func show_result(
 		_can_log = false
 		status_label.text = "No PB — finish 40 lines to log time"
 		submit_btn.text = "LOG TIME"
+	elif ultra and timed_out:
+		title_label.text = "SIGNAL WINDOW CLOSED"
+		title_label.add_theme_color_override("font_color", Color(1.0, 0.75, 0.2, 1.0))
+		score_label.text = "%06d" % score
+		detail_label.text = "ULTRA · %ds · LINES %03d · L%02d" % [int(_mode.duration_sec), lines, level]
+		again_btn.text = "RE-RUN ULTRA"
+		_can_log = _store.is_ultra_highscore(score)
+		status_label.text = "NEW STREET RECORD — LOG SCORE" if _can_log else "Window sealed · transmission complete"
+		submit_btn.text = "LOG SCORE"
+	elif ultra:
+		title_label.text = "GRID BREACH"
+		title_label.add_theme_color_override("font_color", Color(1.0, 0.2, 0.65, 1.0))
+		score_label.text = "%06d" % score
+		detail_label.text = "ULTRA · aborted · LINES %03d · L%02d" % [lines, level]
+		again_btn.text = "RE-RUN ULTRA"
+		_can_log = _store.is_ultra_highscore(score)
+		status_label.text = "NEW STREET RECORD — LOG SCORE" if _can_log else "Breach logged · transmission complete"
+		submit_btn.text = "LOG SCORE"
 	else:
 		title_label.text = "TOP OUT"
 		title_label.add_theme_color_override("font_color", Color(1.0, 0.2, 0.65, 1.0))
@@ -79,7 +101,6 @@ func show_result(
 		submit_btn.text = "LOG SCORE"
 
 	name_edit.text = "PILOT"
-	# Persist immediately so Street Log is never empty after a PB (name can still be re-logged).
 	if _can_log:
 		_persist_entry()
 		_submitted = false
@@ -118,5 +139,7 @@ func _submit() -> void:
 func _persist_entry() -> void:
 	if _mode.win_on_target:
 		_store.submit_sprint(name_edit.text, _score, _lines, _level, _elapsed_sec)
+	elif _mode.has_time_limit():
+		_store.submit_ultra(name_edit.text, _score, _lines, _level, _elapsed_sec)
 	else:
 		_store.submit_marathon(name_edit.text, _score, _lines, _level)

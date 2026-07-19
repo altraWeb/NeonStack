@@ -1,7 +1,7 @@
 extends Control
 
 signal exit_to_title
-signal game_ended(score: int, lines: int, level: int, is_win: bool, elapsed_sec: float)
+signal game_ended(score: int, lines: int, level: int, is_win: bool, elapsed_sec: float, timed_out: bool)
 
 @onready var board_view: BoardView = %BoardView
 @onready var hud: Control = %HUD
@@ -18,6 +18,8 @@ signal game_ended(score: int, lines: int, level: int, is_win: bool, elapsed_sec:
 
 var controller: GameController
 var start_mode: GameMode = GameMode.standard_marathon()
+var _final_packet_shown: bool = false
+var _override_active: bool = false
 
 
 func _ready() -> void:
@@ -29,8 +31,10 @@ func _ready() -> void:
 	controller.state_changed.connect(_on_state_changed)
 	controller.board_updated.connect(_refresh_hud)
 	GameEvents.score_changed.connect(_on_score)
+	GameEvents.lines_cleared.connect(_on_lines_cleared)
 	GameEvents.game_over.connect(_on_game_over)
 	GameEvents.game_won.connect(_on_game_won)
+	GameEvents.game_timed_out.connect(_on_game_timed_out)
 	pause_overlay.visible = false
 	_configure_mode_hud()
 	controller.start_game(start_mode)
@@ -40,15 +44,23 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	if GameEvents.score_changed.is_connected(_on_score):
 		GameEvents.score_changed.disconnect(_on_score)
+	if GameEvents.lines_cleared.is_connected(_on_lines_cleared):
+		GameEvents.lines_cleared.disconnect(_on_lines_cleared)
 	if GameEvents.game_over.is_connected(_on_game_over):
 		GameEvents.game_over.disconnect(_on_game_over)
 	if GameEvents.game_won.is_connected(_on_game_won):
 		GameEvents.game_won.disconnect(_on_game_won)
+	if GameEvents.game_timed_out.is_connected(_on_game_timed_out):
+		GameEvents.game_timed_out.disconnect(_on_game_timed_out)
 
 
 func _configure_mode_hud() -> void:
-	timer_box.visible = start_mode != null and start_mode.win_on_target
+	var show_timer := start_mode != null and (start_mode.win_on_target or start_mode.has_time_limit())
+	timer_box.visible = show_timer
 	lines_title.text = "LINES"
+	_final_packet_shown = false
+	_override_active = false
+	timer_label.modulate = Color(1, 1, 1, 1)
 
 
 func _on_state_changed(state: GameController.State) -> void:
@@ -65,6 +77,28 @@ func _on_score(score: int, lines: int, level: int) -> void:
 	_pulse_hud_value(lines_label)
 
 
+func _on_lines_cleared(_rows: Array, _count: int) -> void:
+	if start_mode == null or not start_mode.has_time_limit():
+		return
+	if controller == null or controller.engine == null:
+		return
+	# Last clear inside the final second window — stamp FINAL PACKET once.
+	if controller.engine.time_remaining() <= 1.0 and not _final_packet_shown:
+		_final_packet_shown = true
+		_flash_final_packet()
+
+
+func _flash_final_packet() -> void:
+	score_label.text = "FINAL"
+	score_label.modulate = Color(0.2, 1.0, 1.0, 1.0)
+	var tw := create_tween()
+	tw.tween_property(score_label, "modulate", Color(1, 1, 1, 1), 0.35)
+	tw.tween_callback(func():
+		if controller != null and controller.engine != null:
+			score_label.text = "%06d" % controller.engine.score.score
+	)
+
+
 func _pulse_hud_value(label: Label) -> void:
 	label.modulate = Color(1.0, 0.85, 0.35, 1.0)
 	var tw := create_tween()
@@ -75,11 +109,44 @@ func _refresh_hud() -> void:
 	if controller == null or controller.engine == null:
 		return
 	var s := controller.engine.score
-	score_label.text = "%06d" % s.score
+	if not _final_packet_shown or score_label.text != "FINAL":
+		score_label.text = "%06d" % s.score
 	level_label.text = "%02d" % s.level
 	_update_lines_label(s.lines)
 	if timer_box.visible:
-		timer_label.text = _format_time(controller.engine.elapsed_sec)
+		_update_timer_label()
+
+
+func _update_timer_label() -> void:
+	var engine := controller.engine
+	if start_mode != null and start_mode.has_time_limit():
+		var remaining := engine.time_remaining()
+		timer_label.text = _format_time(remaining)
+		_style_ultra_timer(remaining)
+	else:
+		timer_label.text = _format_time(engine.elapsed_sec)
+		timer_label.modulate = Color(1, 1, 1, 1)
+		_override_active = false
+
+
+func _style_ultra_timer(remaining: float) -> void:
+	if remaining <= 10.0:
+		if not _override_active:
+			_override_active = true
+			timer_label.text = "OVERRIDE"
+		# Pulse neon red under 10s while still showing countdown after a beat.
+		var pulse := 0.55 + 0.45 * absf(sin(Time.get_ticks_msec() * 0.018))
+		timer_label.modulate = Color(1.0, 0.15 + pulse * 0.2, 0.35, 1.0)
+		if int(Time.get_ticks_msec() / 400) % 2 == 0:
+			timer_label.text = _format_time(remaining)
+		else:
+			timer_label.text = "OVERRIDE"
+	elif remaining <= 30.0:
+		_override_active = false
+		timer_label.modulate = Color(1.0, 0.55, 0.2, 1.0)
+	else:
+		_override_active = false
+		timer_label.modulate = Color(0.55, 0.95, 1.0, 1.0)
 
 
 func _update_lines_label(lines: int) -> void:
@@ -90,7 +157,8 @@ func _update_lines_label(lines: int) -> void:
 
 
 func _format_time(sec: float) -> String:
-	var total_ms := int(sec * 1000.0)
+	var clamped := maxf(0.0, sec)
+	var total_ms := int(clamped * 1000.0)
 	var minutes := total_ms / 60000
 	var seconds := (total_ms % 60000) / 1000
 	var millis := (total_ms % 1000) / 10
@@ -98,20 +166,24 @@ func _format_time(sec: float) -> String:
 
 
 func _on_game_over(final_score: int) -> void:
-	_emit_game_ended(final_score, false, -1.0)
+	_emit_game_ended(final_score, false, -1.0, false)
 
 
 func _on_game_won(final_score: int, elapsed_sec: float) -> void:
-	_emit_game_ended(final_score, true, elapsed_sec)
+	_emit_game_ended(final_score, true, elapsed_sec, false)
 
 
-func _emit_game_ended(final_score: int, is_win: bool, elapsed_override: float) -> void:
+func _on_game_timed_out(final_score: int, elapsed_sec: float) -> void:
+	_emit_game_ended(final_score, false, elapsed_sec, true)
+
+
+func _emit_game_ended(final_score: int, is_win: bool, elapsed_override: float, timed_out: bool) -> void:
 	# End states hand off to Main for a screen swap; never quit the tree.
 	if not is_inside_tree() or controller == null or controller.engine == null:
 		return
 	var s := controller.engine.score
 	var elapsed := elapsed_override if elapsed_override >= 0.0 else controller.engine.elapsed_sec
-	game_ended.emit(final_score, s.lines, s.level, is_win, elapsed)
+	game_ended.emit(final_score, s.lines, s.level, is_win, elapsed, timed_out)
 
 
 func _unhandled_input(event: InputEvent) -> void:

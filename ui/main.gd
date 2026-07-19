@@ -90,9 +90,16 @@ func _start_game(mode: GameMode = null) -> void:
 	play.game_ended.connect(_on_game_ended)
 
 
-func _on_game_ended(score: int, lines: int, level: int, is_win: bool, elapsed_sec: float) -> void:
+func _on_game_ended(
+	score: int,
+	lines: int,
+	level: int,
+	is_win: bool,
+	elapsed_sec: float,
+	timed_out: bool = false
+) -> void:
 	# Defer presentation so we never mutate the tree mid-signal from PlayScene.
-	# Top-out / win must only swap to the end screen — never quit the app.
+	# Top-out / win / timeout must only swap to the end screen — never quit the app.
 	if _presenting_end:
 		return
 	_presenting_end = true
@@ -102,6 +109,7 @@ func _on_game_ended(score: int, lines: int, level: int, is_win: bool, elapsed_se
 		"level": level,
 		"is_win": is_win,
 		"elapsed_sec": elapsed_sec,
+		"timed_out": timed_out,
 	}
 	call_deferred("_present_game_over")
 
@@ -136,7 +144,8 @@ func _present_game_over() -> void:
 		int(payload["level"]),
 		bool(payload["is_win"]),
 		float(payload["elapsed_sec"]),
-		_active_mode
+		_active_mode,
+		bool(payload.get("timed_out", false))
 	)
 	go.play_again.connect(func(): _start_game(_active_mode))
 	go.back_to_title.connect(_show_title)

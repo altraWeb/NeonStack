@@ -27,6 +27,7 @@ func _ready() -> void:
 	GameEvents.level_up.connect(_on_level_up)
 	GameEvents.game_over.connect(_on_game_over)
 	GameEvents.game_won.connect(_on_game_won)
+	GameEvents.game_timed_out.connect(_on_game_timed_out)
 	GameEvents.piece_held.connect(func(_id): _beep(520.0, 0.045, 0.16, 0.35))
 	GameEvents.game_started.connect(_on_game_started)
 
@@ -97,6 +98,15 @@ func _on_game_won(_score: int, _elapsed: float) -> void:
 	_beep(440.0, 0.12, 0.22, 0.35)
 	_beep(660.0, 0.14, 0.26, 0.25)
 	_beep(990.0, 0.22, 0.32, 0.18)
+
+
+func _on_game_timed_out(_score: int, _elapsed: float) -> void:
+	# Closing the signal window — rising alarm then hard cut.
+	_kick = 0.85
+	_beep(220.0, 0.08, 0.18, 0.55)
+	_beep(330.0, 0.1, 0.22, 0.4)
+	_beep(495.0, 0.14, 0.28, 0.3)
+	_beep(740.0, 0.2, 0.2, 0.55)
 
 
 func _ensure_buses() -> void:

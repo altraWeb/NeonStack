@@ -6,6 +6,7 @@ signal back_pressed
 @onready var back_btn: Button = %BackButton
 @onready var marathon_btn: Button = %MarathonButton
 @onready var sprint_btn: Button = %SprintButton
+@onready var ultra_btn: Button = %UltraButton
 @onready var subtitle: Label = %Subtitle
 
 var _mode_id: String = GameMode.standard_marathon().id
@@ -15,6 +16,7 @@ func _ready() -> void:
 	back_btn.pressed.connect(func(): back_pressed.emit())
 	marathon_btn.pressed.connect(func(): _select(GameMode.standard_marathon().id))
 	sprint_btn.pressed.connect(func(): _select(GameMode.sprint_40().id))
+	ultra_btn.pressed.connect(func(): _select(GameMode.ultra_180().id))
 	refresh()
 
 
@@ -27,9 +29,18 @@ func refresh() -> void:
 	var store := LocalHighscoreStore.new()
 	var top := store.get_top(_mode_id, 10)
 	var sprint := _mode_id == GameMode.sprint_40().id
-	subtitle.text = "SPRINT · fastest clears" if sprint else "MARATHON · highest scores"
-	marathon_btn.disabled = not sprint
+	var ultra := _mode_id == GameMode.ultra_180().id
+
+	if sprint:
+		subtitle.text = "SPRINT · fastest clears"
+	elif ultra:
+		subtitle.text = "ULTRA · highest scores in 180s"
+	else:
+		subtitle.text = "MARATHON · highest scores"
+
+	marathon_btn.disabled = _mode_id == GameMode.standard_marathon().id
 	sprint_btn.disabled = sprint
+	ultra_btn.disabled = ultra
 
 	if top.is_empty():
 		list_label.text = "No transmissions logged yet."

@@ -4,7 +4,7 @@ extends Node
 signal state_changed(state: State)
 signal board_updated
 
-enum State { READY, PLAYING, PAUSED, GAME_OVER, WON }
+enum State { READY, PLAYING, PAUSED, GAME_OVER, WON, TIMED_OUT }
 
 var engine: BoardEngine
 var mode: GameMode
@@ -48,6 +48,7 @@ func _wire_events() -> void:
 	engine.leveled_up.connect(func(level: int): GameEvents.level_up.emit(level))
 	engine.ended.connect(_on_engine_ended)
 	engine.won.connect(_on_engine_won)
+	engine.timed_out.connect(_on_engine_timed_out)
 
 
 func start_game(game_mode: GameMode = null) -> void:
@@ -79,23 +80,37 @@ func _set_state(next: State) -> void:
 
 
 func _on_engine_ended(final_score: int) -> void:
-	if state == State.GAME_OVER or state == State.WON:
+	if _is_terminal_state():
 		return
-	_move_repeat.end()
-	_soft_repeat.end()
-	_move_dir = 0
+	_stop_repeat_inputs()
 	_set_state(State.GAME_OVER)
 	GameEvents.game_over.emit(final_score)
 
 
 func _on_engine_won(final_score: int, elapsed_sec: float) -> void:
-	if state == State.GAME_OVER or state == State.WON:
+	if _is_terminal_state():
 		return
+	_stop_repeat_inputs()
+	_set_state(State.WON)
+	GameEvents.game_won.emit(final_score, elapsed_sec)
+
+
+func _on_engine_timed_out(final_score: int, elapsed_sec: float) -> void:
+	if _is_terminal_state():
+		return
+	_stop_repeat_inputs()
+	_set_state(State.TIMED_OUT)
+	GameEvents.game_timed_out.emit(final_score, elapsed_sec)
+
+
+func _is_terminal_state() -> bool:
+	return state == State.GAME_OVER or state == State.WON or state == State.TIMED_OUT
+
+
+func _stop_repeat_inputs() -> void:
 	_move_repeat.end()
 	_soft_repeat.end()
 	_move_dir = 0
-	_set_state(State.WON)
-	GameEvents.game_won.emit(final_score, elapsed_sec)
 
 
 func _process(delta: float) -> void:

@@ -36,6 +36,12 @@ func apply_feel_settings() -> void:
 	_soft_repeat.das_sec = 0.0
 	_soft_repeat.arr_sec = maxf(0.001, SettingsService.soft_drop_arr_ms / 1000.0)
 	engine.lock_delay = SettingsService.lock_delay_ms / 1000.0
+	# Reset in-flight DAS/ARR clocks so a mid-hold slider change cannot dump
+	# a burst of steps on the next tick with the old timer state.
+	if _move_repeat.is_active():
+		_move_repeat.begin(false)
+	if _soft_repeat.is_active():
+		_soft_repeat.begin(true)
 
 
 func _wire_events() -> void:

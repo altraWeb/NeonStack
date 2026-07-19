@@ -12,15 +12,19 @@ signal back_to_title
 @onready var title_btn: Button = %TitleButton
 @onready var status_label: Label = %Status
 
-var _store: LocalHighscoreStore
+## Created eagerly — show_result() can run before _ready() after add_child.
+var _store: LocalHighscoreStore = LocalHighscoreStore.new()
 var _score: int = 0
 var _lines: int = 0
 var _level: int = 1
+var _elapsed_sec: float = 0.0
+var _is_win: bool = false
+var _mode: GameMode = GameMode.standard_marathon()
 var _submitted: bool = false
+var _can_log: bool = false
 
 
 func _ready() -> void:
-	_store = LocalHighscoreStore.new()
 	submit_btn.pressed.connect(_submit)
 	again_btn.pressed.connect(func(): play_again.emit())
 	title_btn.pressed.connect(func(): back_to_title.emit())
@@ -38,39 +42,50 @@ func show_result(
 	_score = score
 	_lines = lines
 	_level = level
+	_elapsed_sec = elapsed_sec
+	_is_win = is_win
+	_mode = mode if mode != null else GameMode.standard_marathon()
 	_submitted = false
-	score_label.text = "%06d" % score
 
-	if is_win:
+	var sprint := _mode.win_on_target
+	_can_log = false
+
+	if is_win and sprint:
 		title_label.text = "PROTOCOL COMPLETE"
 		title_label.add_theme_color_override("font_color", Color(0.2, 0.95, 1.0, 1.0))
-		var time_txt := _format_time(elapsed_sec)
-		var target := mode.target_lines if mode != null and mode.target_lines > 0 else lines
-		detail_label.text = "SPRINT CLEAR  ·  %d/%d  ·  %s" % [lines, target, time_txt]
-		status_label.text = "Grid purged · time locked"
+		score_label.text = _format_time(elapsed_sec)
+		detail_label.text = "SPRINT CLEAR  ·  %d/%d  ·  SCORE %06d" % [lines, _mode.target_lines, score]
 		again_btn.text = "RE-RUN SPRINT"
-	else:
-		# Top-out is a normal end state — avoid "CRASH" wording that reads like an engine failure.
+		_can_log = _store.is_sprint_highscore(elapsed_sec)
+		status_label.text = "Personal best — press LOG TIME" if _can_log else "Grid purged · time locked"
+		submit_btn.text = "LOG TIME"
+	elif sprint:
 		title_label.text = "TOP OUT"
 		title_label.add_theme_color_override("font_color", Color(1.0, 0.2, 0.65, 1.0))
-		if mode != null and mode.win_on_target and mode.target_lines > 0:
-			var time_txt := _format_time(elapsed_sec)
-			detail_label.text = "SPRINT  ·  %d/%d  ·  %s" % [lines, mode.target_lines, time_txt]
-			again_btn.text = "RE-RUN SPRINT"
-		else:
-			detail_label.text = "LINES %03d  ·  LEVEL %02d" % [lines, level]
-			again_btn.text = "RELAUNCH"
-		status_label.text = "New log entry available" if _store.is_highscore(score) else "Transmission complete"
+		score_label.text = _format_time(elapsed_sec)
+		detail_label.text = "SPRINT  ·  %d/%d  ·  incomplete" % [lines, _mode.target_lines]
+		again_btn.text = "RE-RUN SPRINT"
+		_can_log = false
+		status_label.text = "No PB — finish 40 lines to log time"
+		submit_btn.text = "LOG TIME"
+	else:
+		title_label.text = "TOP OUT"
+		title_label.add_theme_color_override("font_color", Color(1.0, 0.2, 0.65, 1.0))
+		score_label.text = "%06d" % score
+		detail_label.text = "MARATHON  ·  LINES %03d  ·  LEVEL %02d" % [lines, level]
+		again_btn.text = "RELAUNCH"
+		_can_log = _store.is_marathon_highscore(score)
+		status_label.text = "Highscore — press LOG SCORE" if _can_log else "Transmission complete"
+		submit_btn.text = "LOG SCORE"
 
-	var can_log := _store.is_highscore(score)
-	if is_win and not can_log:
-		status_label.text = "Grid purged · time locked"
-	elif is_win and can_log:
-		status_label.text = "Personal best uplink ready"
-
-	submit_btn.disabled = not can_log
-	name_edit.editable = can_log
 	name_edit.text = "PILOT"
+	# Persist immediately so Street Log is never empty after a PB (name can still be re-logged).
+	if _can_log:
+		_persist_entry()
+		_submitted = false
+		status_label.text = "Saved as PILOT — edit name & LOG to add another"
+	submit_btn.disabled = not _can_log
+	name_edit.editable = _can_log
 	if name_edit.editable:
 		name_edit.grab_focus()
 		name_edit.select_all()
@@ -87,10 +102,21 @@ func _format_time(sec: float) -> String:
 
 
 func _submit() -> void:
-	if _submitted or not _store.is_highscore(_score):
+	if not _can_log:
 		return
-	_store.submit(name_edit.text.strip_edges(), _score, _lines, _level)
+	if _mode.win_on_target and (not _is_win or _elapsed_sec <= 0.0):
+		return
+	if not _mode.win_on_target and _score <= 0:
+		return
+	_persist_entry()
 	_submitted = true
 	submit_btn.disabled = true
 	name_edit.editable = false
-	status_label.text = "Logged to local dock"
+	status_label.text = "Logged to Street Log"
+
+
+func _persist_entry() -> void:
+	if _mode.win_on_target:
+		_store.submit_sprint(name_edit.text, _score, _lines, _level, _elapsed_sec)
+	else:
+		_store.submit_marathon(name_edit.text, _score, _lines, _level)

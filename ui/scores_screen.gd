@@ -4,22 +4,56 @@ signal back_pressed
 
 @onready var list_label: Label = %List
 @onready var back_btn: Button = %BackButton
+@onready var marathon_btn: Button = %MarathonButton
+@onready var sprint_btn: Button = %SprintButton
+@onready var subtitle: Label = %Subtitle
+
+var _mode_id: String = GameMode.standard_marathon().id
 
 
 func _ready() -> void:
 	back_btn.pressed.connect(func(): back_pressed.emit())
+	marathon_btn.pressed.connect(func(): _select(GameMode.standard_marathon().id))
+	sprint_btn.pressed.connect(func(): _select(GameMode.sprint_40().id))
+	refresh()
+
+
+func _select(mode_id: String) -> void:
+	_mode_id = mode_id
 	refresh()
 
 
 func refresh() -> void:
 	var store := LocalHighscoreStore.new()
-	var top := store.get_top(10)
+	var top := store.get_top(_mode_id, 10)
+	var sprint := _mode_id == GameMode.sprint_40().id
+	subtitle.text = "SPRINT · fastest clears" if sprint else "MARATHON · highest scores"
+	marathon_btn.disabled = not sprint
+	sprint_btn.disabled = sprint
+
 	if top.is_empty():
 		list_label.text = "No transmissions logged yet."
+		back_btn.grab_focus()
 		return
+
 	var lines: PackedStringArray = []
 	for i in top.size():
 		var e: Dictionary = top[i]
-		lines.append("%2d  %-12s  %06d  L%02d" % [i + 1, str(e.get("name", "?")), int(e.get("score", 0)), int(e.get("level", 1))])
+		var name := str(e.get("name", "?"))
+		if sprint:
+			var sec := float(e.get("elapsed_sec", 0.0))
+			lines.append("%2d  %-12s  %s" % [i + 1, name, _format_time(sec)])
+		else:
+			lines.append("%2d  %-12s  %06d  L%02d" % [
+				i + 1, name, int(e.get("score", 0)), int(e.get("level", 1))
+			])
 	list_label.text = "\n".join(lines)
 	back_btn.grab_focus()
+
+
+func _format_time(sec: float) -> String:
+	var total_ms := int(sec * 1000.0)
+	var minutes := total_ms / 60000
+	var seconds := (total_ms % 60000) / 1000
+	var millis := (total_ms % 1000) / 10
+	return "%d:%02d.%02d" % [minutes, seconds, millis]

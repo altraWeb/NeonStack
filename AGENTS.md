@@ -33,12 +33,14 @@ Exit code `0` + `TEST_OK` means green; `1` + `TEST_FAIL` means red.
 After gameplay/feel/UI changes (and when the user wants to try the build), **start the game for them**:
 
 ```bash
-/Applications/Godot.app/Contents/MacOS/Godot --path /Users/altrano/Desktop/Projects/Tetris
+# Use macOS LaunchServices so the window stays open (raw binary/`&` often dies when the agent shell ends).
+open -n /Applications/Godot.app --args --path /Users/altrano/Desktop/Projects/Tetris
+sleep 2
+pgrep -lf "Godot.*Tetris"   # must still be alive
 ```
 
-(`open -a Godot` is unreliable — prefer the binary path above, backgrounded.)
-
 Do not assume they will launch Godot themselves unless they ask to.
+Never relaunch if a healthy Tetris Godot is already running.
 
 ### Never kill a healthy play session
 
@@ -50,11 +52,13 @@ Do not assume they will launch Godot themselves unless they ask to.
 
 ## Current focus
 
-- **B — Sprint 40-line mode:** done; await playtest feedback (title mode pick, HUD timer/lines, win screen)
+- **Mode highscores:** done — Marathon by score, Sprint by clear time
 
 ## Backlog
 
-- _(empty — pick next surprise / polish from playtest)_
+- **D — Ultra/Blitz mode:** timed score attack
+- **E — Pause feel sliders:** DAS/ARR/soft-drop in settings panel
+- **F — Surprise polish:** agent pick
 
 ## Done
 

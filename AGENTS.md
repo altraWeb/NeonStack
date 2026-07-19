@@ -52,11 +52,11 @@ Never relaunch if a healthy Tetris Godot is already running.
 
 ## Current focus
 
-- **V1.0.0** — ship package in progress / playtest
+- **V1.0.0 shipped locally** — playtest; then plan next version
 
 ## Backlog
 
-- _(plan next version after V1)_
+- _(plan next version after V1 playtest)_
 
 ## Done
 

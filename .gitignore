@@ -1,0 +1,51 @@
+# Godot 4
+.godot/
+*.translation
+export.cfg
+export_presets.cfg
+*.tmp
+
+# Godot / .NET leftovers
+.mono/
+data_*/
+mono_crash.*.json
+
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+Desktop.ini
+
+# Editors / IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# Local secrets & env
+.env
+.env.*
+*.pem
+*.keystore
+secrets/
+
+# Build / export output
+builds/
+dist/
+export/
+*.apk
+*.aab
+*.ipa
+*.exe
+*.dll
+*.so
+*.dylib
+*.app/
+*.zip
+*.dmg
+
+# Logs & crash dumps
+*.log
+*.crash
+core

@@ -1,0 +1,225 @@
+[gd_scene load_steps=5 format=3 uid="uid://bplayorbital01"]
+
+[ext_resource type="Script" path="res://game/play_scene.gd" id="1_play"]
+[ext_resource type="Script" path="res://game/board_view.gd" id="2_board"]
+[ext_resource type="Script" path="res://game/dock_panel.gd" id="3_dock"]
+[ext_resource type="PackedScene" path="res://ui/settings_panel.tscn" id="4_settings"]
+
+[node name="PlayScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_play")
+
+[node name="BoardView" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -300.0
+offset_right = 160.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_board")
+
+[node name="HUD" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="LeftDock" type="VBoxContainer" parent="HUD"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 48.0
+offset_top = -220.0
+offset_right = 168.0
+offset_bottom = 220.0
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="HoldTitle" type="Label" parent="HUD/LeftDock"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.3, 0.75, 0.85)
+theme_override_font_sizes/font_size = 14
+text = "HOLD"
+horizontal_alignment = 1
+
+[node name="HoldPanel" type="Control" parent="HUD/LeftDock"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 100)
+layout_mode = 2
+script = ExtResource("3_dock")
+
+[node name="ScoreBox" type="VBoxContainer" parent="HUD/LeftDock"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ScoreTitle" type="Label" parent="HUD/LeftDock/ScoreBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 1, 0.85)
+theme_override_font_sizes/font_size = 14
+text = "SCORE"
+
+[node name="ScoreValue" type="Label" parent="HUD/LeftDock/ScoreBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.95, 1, 0.95)
+theme_override_font_sizes/font_size = 28
+text = "000000"
+
+[node name="LevelBox" type="VBoxContainer" parent="HUD/LeftDock"]
+layout_mode = 2
+
+[node name="LevelTitle" type="Label" parent="HUD/LeftDock/LevelBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 1, 0.85)
+theme_override_font_sizes/font_size = 14
+text = "LEVEL"
+
+[node name="LevelValue" type="Label" parent="HUD/LeftDock/LevelBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.95, 1, 0.95)
+theme_override_font_sizes/font_size = 28
+text = "01"
+
+[node name="LinesBox" type="VBoxContainer" parent="HUD/LeftDock"]
+layout_mode = 2
+
+[node name="LinesTitle" type="Label" parent="HUD/LeftDock/LinesBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 1, 0.85)
+theme_override_font_sizes/font_size = 14
+text = "LINES"
+
+[node name="LinesValue" type="Label" parent="HUD/LeftDock/LinesBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.95, 1, 0.95)
+theme_override_font_sizes/font_size = 28
+text = "000"
+
+[node name="TimerBox" type="VBoxContainer" parent="HUD/LeftDock"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="TimerTitle" type="Label" parent="HUD/LeftDock/TimerBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.75, 0.25, 0.9)
+theme_override_font_sizes/font_size = 14
+text = "TIME"
+
+[node name="TimerValue" type="Label" parent="HUD/LeftDock/TimerBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.45, 0.95)
+theme_override_font_sizes/font_size = 28
+text = "0:00.00"
+
+[node name="RightDock" type="VBoxContainer" parent="HUD"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -168.0
+offset_top = -200.0
+offset_right = -48.0
+offset_bottom = 200.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="NextTitle" type="Label" parent="HUD/RightDock"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.3, 0.75, 0.85)
+theme_override_font_sizes/font_size = 14
+text = "NEXT"
+horizontal_alignment = 1
+
+[node name="NextPanel" type="Control" parent="HUD/RightDock"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 280)
+layout_mode = 2
+script = ExtResource("3_dock")
+
+[node name="Hint" type="Label" parent="HUD"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -320.0
+offset_top = -40.0
+offset_right = 320.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.35, 0.75, 0.5)
+theme_override_font_sizes/font_size = 12
+text = "←→ move · ↑/X rotate · Z/Q CCW · ↓ soft · SPACE hard · C hold · P pause"
+horizontal_alignment = 1
+
+[node name="PauseOverlay" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.04, 0.02, 0.08, 0.78)
+
+[node name="PauseColumn" type="VBoxContainer" parent="PauseOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -180.0
+offset_right = 180.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="PauseLabel" type="Label" parent="PauseOverlay/PauseColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.95, 1, 0.95)
+theme_override_font_sizes/font_size = 28
+text = "PAUSED"
+horizontal_alignment = 1
+
+[node name="SettingsPanel" parent="PauseOverlay/PauseColumn" instance=ExtResource("4_settings")]
+layout_mode = 2
+
+[node name="PauseHint" type="Label" parent="PauseOverlay/PauseColumn"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.35, 0.75, 0.65)
+theme_override_font_sizes/font_size = 12
+text = "[P / ESC] resume · [Enter] title"
+horizontal_alignment = 1

@@ -1,0 +1,142 @@
+[gd_scene load_steps=3 format=3 uid="uid://btitleorbital01"]
+
+[ext_resource type="Script" path="res://ui/title_screen.gd" id="1_title"]
+[ext_resource type="PackedScene" path="res://ui/settings_panel.tscn" id="2_settings"]
+
+[node name="TitleScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_title")
+
+[node name="Center" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -260.0
+offset_right = 320.0
+offset_bottom = 280.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="BrandStack" type="Control" parent="Center"]
+custom_minimum_size = Vector2(0, 88)
+layout_mode = 2
+
+[node name="BrandGhost" type="Label" parent="Center/BrandStack"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.15, 0.95, 1, 0.4)
+theme_override_font_sizes/font_size = 78
+text = "NEON STACK"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Brand" type="Label" parent="Center/BrandStack"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(320, 44)
+theme_override_colors/font_color = Color(1, 0.25, 0.75, 1)
+theme_override_font_sizes/font_size = 78
+text = "NEON STACK"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PulseLine" type="ColorRect" parent="Center"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(380, 3)
+layout_mode = 2
+size_flags_horizontal = 4
+color = Color(0.15, 0.95, 1, 0.9)
+
+[node name="PulseLineAmber" type="ColorRect" parent="Center"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 2)
+layout_mode = 2
+size_flags_horizontal = 4
+color = Color(1, 0.75, 0.18, 0.85)
+
+[node name="Subtitle" type="Label" parent="Center"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.85, 1, 0.9)
+theme_override_font_sizes/font_size = 16
+text = "Choose your protocol · rain-slick neon grid"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="Center"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="ModeHint" type="Label" parent="Center"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.35, 0.75, 0.55)
+theme_override_font_sizes/font_size = 12
+text = "SELECT UPLINK"
+horizontal_alignment = 1
+
+[node name="MarathonButton" type="Button" parent="Center"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 46)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 18
+text = "MARATHON · ENDLESS STACK"
+
+[node name="SprintButton" type="Button" parent="Center"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 46)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 18
+text = "SPRINT 40 · RACE THE CLOCK"
+
+[node name="ScoresButton" type="Button" parent="Center"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 16
+text = "STREET LOG"
+
+[node name="SettingsPanel" parent="Center" instance=ExtResource("2_settings")]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Footer" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -260.0
+offset_top = -48.0
+offset_right = 260.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.3, 0.7, 0.45)
+theme_override_font_sizes/font_size = 12
+text = "Enter / Space → Marathon · or pick Sprint 40"
+horizontal_alignment = 1

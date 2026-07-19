@@ -1,0 +1,57 @@
+[gd_scene load_steps=2 format=3 uid="uid://bsettingsneon01"]
+
+[ext_resource type="Script" path="res://ui/settings_panel.gd" id="1_settings"]
+
+[node name="SettingsPanel" type="VBoxContainer"]
+theme_override_constants/separation = 8
+script = ExtResource("1_settings")
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.3, 0.75, 0.9)
+theme_override_font_sizes/font_size = 14
+text = "FEEL / AUDIO"
+horizontal_alignment = 1
+
+[node name="MusicRow" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MusicLabel" type="Label" parent="MusicRow"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.9, 1, 0.9)
+theme_override_font_sizes/font_size = 12
+text = "MUSIC"
+
+[node name="MusicSlider" type="HSlider" parent="MusicRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+value = 0.65
+
+[node name="SfxRow" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SfxLabel" type="Label" parent="SfxRow"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.9, 1, 0.9)
+theme_override_font_sizes/font_size = 12
+text = "SFX"
+
+[node name="SfxSlider" type="HSlider" parent="SfxRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+value = 0.9
+
+[node name="GhostCheck" type="CheckButton" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.95, 1, 0.9)
+theme_override_font_sizes/font_size = 12
+button_pressed = true
+text = "GHOST PIECE"
+alignment = 1
